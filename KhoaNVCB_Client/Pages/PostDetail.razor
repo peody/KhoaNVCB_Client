@@ -1,0 +1,350 @@
+﻿@page "/post/{id:int}"
+@using KhoaNVCB_Client.Models
+@using KhoaNVCB_Client.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [AllowAnonymous]
+@inject PostService PostService
+@inject CategoryService CategoryService
+@inject AuthenticationStateProvider AuthStateProvider
+<PageTitle>@(post?.Title ?? "Đang tải...") - Khoa NVCB</PageTitle>
+
+<div class="container py-5">
+    @if (isLoading)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-danger" role="status"></div>
+            <p class="mt-3 text-muted">Đang tải nội dung bài viết...</p>
+        </div>
+    }
+    else if (post == null)
+    {
+        <div class="alert alert-warning text-center shadow-sm rounded-3">
+            <i class="oi oi-warning fs-4 me-2"></i> Không tìm thấy bài viết hoặc bài viết đã bị xóa.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8 col-xl-9 mb-5">
+
+                <div class="mb-2 text-uppercase fw-bold" style="color: #d35400; font-size: 0.85rem; letter-spacing: 0.5px;">
+                    @(post.CategoryName ?? "CHUYÊN MỤC")
+                </div>
+
+                <h1 class="fw-bold text-dark mb-4" style="line-height: 1.4;">@post.Title</h1>
+
+                @if (!string.IsNullOrEmpty(post.OriginalUrl))
+                {
+                    <div class="mb-4">
+                        @if (post.SourceType == "Video")
+                        {
+                            <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+                                <iframe src="@GetEmbedUrl(post.OriginalUrl)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@post.OriginalUrl" class="img-fluid rounded-3 shadow-sm w-100" alt="@post.Title" style="object-fit: cover;" onerror="this.style.display='none';" />
+                        }
+                    </div>
+                }
+
+                <div class="d-flex align-items-center text-muted small mb-4 pb-3 border-bottom">
+                    <span class="me-4"><i class="oi oi-person me-1"></i> Tác giả: <strong>@(post.AuthorName ?? "Khoa NVCB")</strong></span>
+                    <span><i class="oi oi-clock me-1"></i> Xuất bản: <strong>@post.CreatedDate?.ToString("dd/MM/yyyy")</strong></span>
+                </div>
+
+                <div class="post-content">
+                    @((MarkupString)(post.Content ?? ""))
+                </div>
+                <div class="comments-section mt-5 pt-4 border-top border-2">
+                    <h4 class="fw-bold mb-4" style="color: #1a237e;">
+                        <i class="oi oi-chat me-2"></i> Bình luận (@comments.Count)
+                    </h4>
+
+                    @if (comments.Any())
+                    {
+                        <div class="mb-5">
+                            @foreach (var comment in comments)
+                            {
+                                <div class="d-flex mb-4">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center text-white fw-bold shadow-sm" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                            @(comment.FullName.Substring(0, 1).ToUpper())
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 bg-light p-3 rounded-3 border">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="fw-bold mb-0 text-danger">@comment.FullName</h6>
+                                            <small class="text-muted">@comment.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</small>
+                                        </div>
+                                        <p class="mb-0" style="color: #444; line-height: 1.6;">@comment.Content</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="comment-form bg-white p-4 rounded-3 border shadow-sm">
+                        <h5 class="fw-bold mb-3">Để lại một bình luận</h5>
+
+                        <AuthorizeView>
+                            <Authorized>
+                                @if (!string.IsNullOrEmpty(commentError))
+                                {
+                                    <div class="alert alert-danger py-2 small">@commentError</div>
+                                }
+                                <div class="mb-3">
+                                    <textarea class="form-control bg-light" rows="4" @bind="newCommentText" placeholder="Nhập nội dung thảo luận của bạn tại đây..."></textarea>
+                                </div>
+                                <div class="text-end">
+                                    <button class="btn btn-danger px-4 fw-bold" @onclick="SubmitComment" disabled="@isSubmittingComment">
+                                        @if (isSubmittingComment)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-2"></span>
+                                        }
+                                        GỬI BÌNH LUẬN
+                                    </button>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                                <div class="alert alert-secondary text-center mb-0">
+                                    Vui lòng
+                                    <a href="/login?returnUrl=/post/@id" class="fw-bold text-danger text-decoration-none">Đăng nhập</a>
+                                    để tham gia thảo luận bài viết này.
+                                </div>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-xl-3">
+                <div class="sidebar-box p-4 rounded-3 shadow-sm bg-white border">
+                    <h6 class="fw-bold text-uppercase mb-4" style="color: #1a237e;">CHUYÊN MỤC BÀI VIẾT</h6>
+                    <ul class="list-unstyled mb-0">
+                        @if (categories != null)
+                        {
+                            @* 1. CHỈ LỌC CÁC CHUYÊN MỤC CHA (GỐC) ĐỂ HIỂN THỊ TRƯỚC *@
+                            foreach (var parent in categories.Where(c => c.ParentId == null))
+                            {
+                                // Lấy danh sách các chuyên mục con thuộc về ông cha này
+                                var children = categories.Where(c => c.ParentId == parent.CategoryId).ToList();
+
+                                <li class="mb-3 border-bottom pb-2">
+                                    @* GIAO DIỆN MỤC CHA *@
+                                    <a href="/category/@parent.CategoryId" class="text-decoration-none d-flex align-items-start category-link @(parent.CategoryId == id ? "active-cat" : "")">
+                                        <i class="oi oi-folder mt-1 me-2 text-danger" style="font-size: 0.8rem;"></i>
+                                        <span class="flex-grow-1 fw-bold">@parent.CategoryName</span>
+                                        <span class="text-muted ms-1">(@GetPostCount(parent.CategoryName))</span>
+                                    </a>
+
+                                    @* GIAO DIỆN MỤC CON (NẾU CÓ) *@
+                                    @if (children.Any())
+                                    {
+                                        /* Thụt lề (ms-3) và có đường viền mờ bên trái (border-start) để tạo cảm giác cây thư mục */
+                                        <ul class="list-unstyled mt-2 ms-3 ps-3 border-start border-2" style="border-color: #e9ecef !important;">
+                                            @foreach (var child in children)
+                                            {
+                                                <li class="mb-2">
+                                                    <a href="/category/@child.CategoryId" class="text-decoration-none d-flex align-items-start category-link @(child.CategoryId == id ? "active-cat" : "")">
+                                                        <i class="oi oi-chevron-right mt-1 me-2 text-secondary" style="font-size: 0.6rem;"></i>
+                                                        <span class="flex-grow-1">@child.CategoryName</span>
+                                                        <span class="text-muted ms-1">(@GetPostCount(child.CategoryName))</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    /* Tổng thể khung nội dung */
+    .post-content {
+        font-size: 1.2rem;
+        line-height: 1.9;
+        color: #2c3e50;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+        /* Định dạng các tiêu đề bên trong bài viết */
+        .post-content h1, .post-content h2, .post-content h3 {
+            color: #1a237e;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        /* Định dạng hình ảnh - Quan trọng để ảnh từ Word/TinyMCE hiện đẹp */
+        .post-content img {
+            max-width: 100%;
+            height: auto !important;
+            border-radius: 8px;
+            display: block;
+            margin: 1.5rem auto;
+            shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Định dạng danh sách (Bullet points) */
+        .post-content ul, .post-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .post-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Định dạng bảng biểu nếu có copy từ Word vào */
+        .post-content table {
+            width: 100% !important;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+            .post-content table td, .post-content table th {
+                border: 1px solid #dee2e6;
+                padding: 8px;
+            }
+
+    /* Style cho Sidebar */
+    .category-link {
+        color: #555;
+        transition: all 0.2s;
+    }
+
+        .category-link:hover {
+            color: #dc3545;
+            padding-left: 5px;
+        }
+
+    .active-cat {
+        color: #dc3545 !important;
+        font-weight: bold;
+    }
+
+    .sidebar-box {
+        border-top: 4px solid #1a237e !important;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private PostDto? post;
+    private List<CategoryDto>? categories;
+    private List<PostDto>? allPosts;
+    private bool isLoading = true;
+    private List<CommentDto> comments = new();
+    private string newCommentText = "";
+    private string? commentError;
+    private bool isSubmittingComment = false;
+    private int? currentAccountId;
+    protected override async Task OnParametersSetAsync()
+    {
+        isLoading = true;
+
+        post = await PostService.GetByIdAsync(id);
+
+        // Load danh mục sidebar
+        if (categories == null) categories = await CategoryService.GetAllAsync();
+        if (allPosts == null) allPosts = await PostService.GetAllAsync();
+
+        // Load bình luận
+        comments = await PostService.GetCommentsByPostAsync(id);
+
+        // Lấy AccountId của người đang đăng nhập (nếu có)
+        // Lấy thông tin người dùng từ Token
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            // Thử lấy ID bằng nhiều tên gọi khác nhau mà JWT thường dùng
+            var idClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
+                          ?? user.FindFirst("sub")
+                          ?? user.FindFirst("nameid");
+
+            if (idClaim != null && int.TryParse(idClaim.Value, out int accId))
+            {
+                currentAccountId = accId;
+                Console.WriteLine($"[DEBUG] Đã nhận diện ID người dùng: {currentAccountId}");
+            }
+            else
+            {
+                Console.WriteLine("[DEBUG] Không tìm thấy Claim ID trong Token!");
+            }
+        }
+
+        isLoading = false;
+    }
+    private async Task SubmitComment()
+    {
+        commentError = null;
+
+        if (string.IsNullOrWhiteSpace(newCommentText))
+        {
+            commentError = "Vui lòng nhập nội dung bình luận.";
+            return;
+        }
+
+        if (currentAccountId == null)
+        {
+            commentError = "Lỗi xác thực người dùng. Vui lòng đăng nhập lại.";
+            return;
+        }
+
+        isSubmittingComment = true;
+
+        var newComment = new CreateCommentDto
+            {
+                PostId = id,
+                AccountId = currentAccountId.Value,
+                Content = newCommentText
+            };
+
+        var success = await PostService.CreateCommentAsync(newComment);
+
+        if (success)
+        {
+            newCommentText = ""; // Xóa trắng ô nhập
+            comments = await PostService.GetCommentsByPostAsync(id); // Tải lại danh sách bình luận ngay lập tức
+        }
+        else
+        {
+            commentError = "Đã xảy ra lỗi khi gửi bình luận. Vui lòng thử lại.";
+        }
+
+        isSubmittingComment = false;
+    }
+    private string GetEmbedUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return "";
+
+        if (url.Contains("youtube.com/watch?v="))
+        {
+            return url.Replace("watch?v=", "embed/");
+        }
+        if (url.Contains("youtu.be/"))
+        {
+            return url.Replace("youtu.be/", "youtube.com/embed/");
+        }
+        return url;
+    }
+
+    // Đếm số bài viết cho Sidebar
+    private int GetPostCount(string categoryName)
+    {
+        if (allPosts == null || string.IsNullOrEmpty(categoryName)) return 0;
+        return allPosts.Count(p => p.CategoryName == categoryName);
+    }
+}

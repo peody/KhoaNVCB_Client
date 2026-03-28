@@ -1,0 +1,241 @@
+﻿@inherits LayoutComponentBase
+@using KhoaNVCB_Client.Models
+@using KhoaNVCB_Client.Services
+@inject CategoryService CategoryService
+@inject AuthService AuthService
+@inject NavigationManager Nav
+<div class="d-flex flex-column min-vh-100 bg-light w-100 p-0 m-0" style="overflow-x: hidden;">
+    <header class="bg-white shadow-sm sticky-top border-bottom border-danger border-2 w-100">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <div class="d-flex align-items-center">
+                <a href="/" class="text-decoration-none d-flex align-items-center">
+                    <i class="oi oi-shield me-2 fs-2 text-danger"></i>
+                    <img src="/Images/z7665822851758_6d1425400f457ecfa8a38f073cc4e04c.jpg" alt="Logo NV3" style="height: 55px; margin-right: 12px; object-fit: contain;" />
+                    <span class="fs-4 fw-bold text-uppercase" style="color: #b71c1c;">KHOA AN NINH NỘI ĐỊA</span>
+                </a>
+            </div>
+
+            <nav class="d-none d-md-flex gap-4 align-items-center">
+                <a href="/" class="nav-link-custom text-uppercase">Trang chủ</a>
+                <a href="#" class="nav-link-custom text-uppercase">Giới thiệu</a>
+
+                <div class="dropdown dropdown-hover position-relative">
+                    <a href="#" class="nav-link-custom text-uppercase d-flex align-items-center pb-2 mb-n2">
+                        Chuyên đề <i class="oi oi-chevron-bottom ms-1 mt-1" style="font-size: 0.7em;"></i>
+                    </a>
+
+                    <ul class="dropdown-menu shadow-lg border-0 rounded-2 mt-0 position-absolute custom-dropdown">
+                        @if (categories == null)
+                        {
+                            <li><span class="dropdown-item text-muted py-2">Đang tải...</span></li>
+                        }
+                        else
+                        {
+                            @* LẶP QUA CÁC CHUYÊN MỤC CHA *@
+                            @foreach (var cat in categories.Where(c => c.ParentId == null))
+                            {
+                                // Tìm xem ông cha này có chuyên mục con nào không
+                                var children = categories.Where(c => c.ParentId == cat.CategoryId).ToList();
+
+                                if (children.Any())
+                                {
+                                    <li class="dropdown-submenu position-relative">
+                                        <a class="dropdown-item py-2 px-3 dropdown-item-custom d-flex justify-content-between align-items-center" href="/category/@cat.CategoryId">
+                                            @cat.CategoryName
+                                            <i class="oi oi-chevron-right text-muted" style="font-size: 0.7em;"></i>
+                                        </a>
+                                        <ul class="dropdown-menu shadow-lg border-0 rounded-2 position-absolute custom-dropdown-sub">
+                                            @foreach (var child in children)
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item py-2 px-3 dropdown-item-custom" href="/category/@child.CategoryId">
+                                                        @child.CategoryName
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 dropdown-item-custom" href="/category/@cat.CategoryId">
+                                            @cat.CategoryName
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+
+                <AuthorizeView>
+                    <Authorized>
+                        @* KHỐI NÀY CHỈ HIỆN RA NẾU ROLE LÀ ADMIN *@
+                        <AuthorizeView Roles="Admin" Context="adminContext">
+                            <Authorized>
+                                <a href="/admin/posts" class="nav-link-custom text-uppercase text-primary me-3">
+                                    <i class="oi oi-pencil me-1 small"></i> QUẢN LÝ BÀI VIẾT
+                                </a>
+                                <a href="/admin/categories" class="nav-link-custom text-uppercase fw-bold me-3" style="color: #1a237e;">
+                                    <i class="oi oi-list-rich me-1"></i> QUẢN LÝ CHUYÊN MỤC
+                                </a>
+                            </Authorized>
+                        </AuthorizeView>
+
+                        @* KHỐI NÀY HIỆN CHO TẤT CẢ NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (ADMIN & STUDENT) *@
+                        <a href="javascript:void(0)" @onclick="HandleLogout" class="nav-link-custom text-uppercase text-danger">
+                            <i class="oi oi-account-logout me-1 small"></i> Đăng xuất
+                        </a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="/login" class="nav-link-custom text-uppercase text-secondary">
+                            <i class="oi oi-lock-locked me-1 small"></i> Quản trị
+                        </a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow-1 w-100">
+        @Body
+    </main>
+
+    <footer class="bg-dark text-white py-5 mt-auto w-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <h5 class="fw-bold text-uppercase border-start border-danger border-4 ps-2 mb-3">Blog Khoa An ninh nội địa</h5>
+                    <p class="text-muted small">Cổng thông tin nghiên cứu về Phản động, Tôn giáo, Dân tộc, Chống khủng bố và An ninh phi truyền thống.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1"><i class="oi oi-envelope-closed me-2"></i>nvcbblog@gmail.com</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" />
+            <div class="text-center text-muted small">
+                &copy; @DateTime.Now.Year - Bản quyền thuộc về Khoa An ninh nội địa.
+            </div>
+        </div>
+    </footer>
+</div>
+
+@code {
+    private List<CategoryDto>? categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Tải danh sách chuyên mục từ API để đổ vào Dropdown
+            categories = await CategoryService.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi tải danh mục trên Header: {ex.Message}");
+            categories = new List<CategoryDto>();
+        }
+    }
+    private async Task HandleLogout()
+    {
+        // Gọi hàm xóa LocalStorage trong AuthService
+        await AuthService.Logout();
+
+        // Chuyển hướng về Trang chủ và Refresh lại trình duyệt để xóa sạch bóng phiên đăng nhập
+        Nav.NavigateTo("/", forceLoad: true);
+    }
+}
+
+<style>
+    .nav-link-custom {
+        text-decoration: none;
+        color: #333;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+        padding: 5px 0;
+        border-bottom: 2px solid transparent;
+    }
+
+        .nav-link-custom:hover {
+            color: #dc3545;
+            border-bottom: 2px solid #dc3545;
+        }
+
+    .sticky-top {
+        z-index: 1020;
+    }
+
+    /* --- HIỆU ỨNG DROPDOWN TRÊN HOVER --- */
+    .dropdown-hover:hover > .dropdown-menu {
+        display: block;
+        animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .custom-dropdown {
+        min-width: 250px; /* Đảm bảo đủ rộng cho các tên chuyên mục dài như trong ảnh */
+        top: 100%;
+        left: 0;
+    }
+
+    .dropdown-item-custom {
+        white-space: normal; /* Cho phép text dài tự động rớt dòng thay vì bị cắt ngang */
+        font-size: 0.95rem;
+        color: #2c3e50;
+        border-bottom: 1px solid #f8f9fa;
+        transition: all 0.2s ease;
+    }
+
+        .dropdown-item-custom:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item-custom:hover {
+            background-color: #f8f9fa;
+            color: #dc3545;
+            padding-left: 1.2rem !important; /* Hiệu ứng thụt lề nhẹ khi hover cực kỳ tinh tế */
+        }
+
+    keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* --- HIỆU ỨNG MENU CON SỔ DỌC XUỐNG --- */
+    .dropdown-submenu > .custom-dropdown-sub {
+        position: static !important; /* Ép nó nằm lọt lòng bên trong menu cha */
+        float: none;
+        box-shadow: none !important; /* Bỏ viền bóng để nhìn liền mạch */
+        padding-left: 1.2rem; /* Thụt lề vào trong cho các mục con */
+        margin-top: 0;
+        background-color: #f8f9fa; /* Màu nền xám nhẹ để phân biệt tầng */
+        display: none; /* Ẩn đi khi chưa hover */
+        border: none;
+    }
+
+    /* Khi hover vào dòng LI cha thì hiện UL con đẩy các mục dưới xuống */
+    .dropdown-submenu:hover > .custom-dropdown-sub {
+        display: block;
+        animation: fadeIn 0.2s ease-in-out;
+    }
+
+    /* Hiệu ứng xoay mũi tên đi xuống cực kỳ xịn xò */
+    .dropdown-submenu > a > i.oi-chevron-right {
+        transition: transform 0.2s ease;
+    }
+
+    .dropdown-submenu:hover > a > i.oi-chevron-right {
+        transform: rotate(90deg); /* Mũi tên quay xuống khi menu mở ra */
+    }
+</style>
