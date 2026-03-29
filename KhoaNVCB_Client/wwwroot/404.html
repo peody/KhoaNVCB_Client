@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Khoa NVCB - An ninh phi truyền thống</title>
+    <title>Khoa An ninh nội địa</title>
     <base href="/" />
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -64,7 +64,7 @@
 
                     try {
                         //const response = await fetch('https://localhost:7240/api/Photos', {
-                            const response = await fetch('https://khoanvcb-api.onrender.com/api/Photos', {
+                        const response = await fetch('https://khoanvcb-api.onrender.com/api/Photos', {
                             method: 'POST',
                             body: formData,
                             // ĐÍNH KÈM TOKEN VÀO YÊU CẦU
@@ -106,6 +106,19 @@
                 }
             }
         };
+    </script>
+    <script>
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
+        }
     </script>
 </body>
 

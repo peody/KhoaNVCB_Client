@@ -6,7 +6,7 @@
 @inject PostService PostService
 @inject CategoryService CategoryService
 
-<PageTitle>@(currentCategory?.CategoryName ?? "Chuyên mục") - Khoa NVCB</PageTitle>
+<PageTitle>@(currentCategory?.CategoryName ?? "Chuyên mục") - Khoa NV3</PageTitle>
 
 <div class="container py-5">
     <div class="row">
@@ -36,9 +36,8 @@
                         <div class="col-md-6 mb-4">
                             <div class="card h-100 border-0 card-hover bg-transparent">
                                 <div class="position-relative rounded-3 overflow-hidden shadow-sm">
-                                    <img src="@(string.IsNullOrEmpty(post.OriginalUrl) ? "https://via.placeholder.com/600x400?text=Khoa+NVCB" : post.OriginalUrl)"
-                                         class="w-100 object-fit-cover" alt="@post.Title" style="height: 220px;"
-                                         onerror="this.src='https://via.placeholder.com/600x400'" />
+                                    <img src="@(string.IsNullOrEmpty(post.OriginalUrl) ? "images/Logo_hoc_vien_ANND.png" : post.OriginalUrl)"
+                                         class="w-100 object-fit-cover" alt="@post.Title" style="height: 220px;" />
 
                                     @if (post.SourceType == "Video" || type == "videos")
                                     {

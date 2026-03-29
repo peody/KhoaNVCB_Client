@@ -6,13 +6,15 @@
 @inject PostService PostService
 @inject CategoryService CategoryService
 
-<PageTitle>Trang chủ - Khoa NVCB</PageTitle>
+<PageTitle>Trang chủ - Khoa NV3</PageTitle>
 
 @* --- PHẦN HERO VIDEO --- *@
+@* --- PHẦN HERO VIDEO --- *@
 <div class="hero-section">
-    <video autoplay loop muted playsinline class="hero-video">
-        @* Sửa đường dẫn: Bỏ dấu ~ và đảm bảo file nằm trong wwwroot/Videos/ *@
-        <source src="/Images/Yêu_cầu_video_nền_không_chữ.mp4" type="video/mp4">
+    @* Thêm thuộc tính poster để hiện 1 bức ảnh mặc định trong lúc chờ tải video hoặc khi mạng yếu *@
+    <video autoplay loop muted playsinline class="hero-video" poster="/Images/Logo_hoc_vien_ANND.png">
+        @* Sửa lại src theo tên file mới (không dấu) *@
+        <source src="/Images/hero-video.mp4" type="video/mp4">
         Trình duyệt của bạn không hỗ trợ thẻ video.
     </video>
 
@@ -42,9 +44,10 @@
             <div class="horizontal-scroll-container d-flex gap-4 pb-3">
                 @foreach (var post in recentPosts)
                 {
-                    <div class="card shadow-sm border-0 rounded-3 flex-shrink-0 card-hover" style="width: 300px;">
-                        <img src="@(string.IsNullOrEmpty(post.ImageUrl) ? "https://via.placeholder.com/300x200?text=News" : post.ImageUrl)"
-                             class="card-img-top" alt="@post.Title" style="height: 160px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x200'" />
+                    @* Đã thay thế style="width: 300px;" bằng class="custom-card-width" *@
+                    <div class="card shadow-sm border-0 rounded-3 flex-shrink-0 card-hover custom-card-width">
+                        <img src="@(string.IsNullOrEmpty(post.ImageUrl) ? "images/Logo_hoc_vien_ANND.png" : post.ImageUrl)"
+                             class="card-img-top" alt="@post.Title" style="height: 160px; object-fit: cover;" />
                         <div class="card-body p-3 d-flex flex-column">
                             <span class="badge bg-danger mb-2 align-self-start" style="font-size: 0.7rem;">@(post.CategoryName ?? "Mới")</span>
                             <a href="/post/@post.PostId" class="text-decoration-none stretched-link">
@@ -75,7 +78,7 @@
                 {
                     <div class="col-md-6 col-lg-4">
                         <div class="category-card rounded-3 shadow-sm overflow-hidden position-relative" style="height: 200px;">
-                            <img src="@(string.IsNullOrEmpty(cat.ImageUrl) ? $"https://via.placeholder.com/600x400/2c3e50/ffffff?text={cat.CategoryName}" : cat.ImageUrl)"
+                            <img src="@(string.IsNullOrEmpty(cat.ImageUrl) ? "images/Logo_hoc_vien_ANND.png" : cat.ImageUrl)"
                                  class="w-100 h-100" style="object-fit: cover;"
                                  alt="@cat.CategoryName" />
                             <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.4); z-index: 1;"></div>
@@ -174,6 +177,7 @@
         overflow-x: auto;
         white-space: nowrap;
         padding-bottom: 10px;
+        scroll-snap-type: x mandatory; /* Giúp vuốt trên mobile mượt hơn */
     }
 
         .horizontal-scroll-container::-webkit-scrollbar {
@@ -188,22 +192,29 @@
     /* 3. CARDS & HOVER */
     .card-hover {
         transition: transform 0.3s ease;
+        scroll-snap-align: start; /* Căn chỉnh card khi vuốt */
     }
 
         .card-hover:hover {
             transform: translateY(-8px);
         }
 
+    /* Kích thước Card tùy chỉnh cho cả máy tính và điện thoại */
+    .custom-card-width {
+        width: 300px;
+    }
+
     .text-truncate-2 {
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* Hiện tối đa 2 dòng */
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        white-space: normal; /* Đảm bảo chữ được xuống dòng */
+        white-space: normal;
         word-break: break-word;
-        line-height: 1.4; /* Khoảng cách dòng cho dễ đọc */
-        height: 2.8em; /* Giữ độ cao cố định cho 2 dòng để các card đều nhau */
+        line-height: 1.4;
+        height: 2.8em;
     }
+
     .category-card {
         transition: transform 0.3s;
         cursor: pointer;
@@ -226,6 +237,7 @@
             border-color: #dc3545 !important;
         }
 
+    /* --- RESPONSIVE CHO MÀN HÌNH NHỎ (MOBILE) --- */
     @@media (max-width: 768px) {
         .hero-title {
             font-size: 2.2rem;
@@ -233,6 +245,13 @@
 
         .hero-subtitle {
             font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        /* Trên điện thoại, card chiếm 80% màn hình để chừa 1 khoảng cho card tiếp theo (gợi ý vuốt) */
+        .custom-card-width {
+            width: 80vw;
         }
     }
 </style>

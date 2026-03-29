@@ -37,5 +37,6 @@ builder.Services.AddAuthorizationCore();
 // Đăng ký bảo vệ Custom của mình
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<KhoaNVCB_Client.Services.PhotoUploadService>();
+builder.Services.AddScoped<QuizService>();
 
 await builder.Build().RunAsync();

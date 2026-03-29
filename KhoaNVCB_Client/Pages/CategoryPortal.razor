@@ -5,7 +5,7 @@
 @attribute [AllowAnonymous]
 @inject CategoryService CategoryService
 
-<PageTitle>@(category?.CategoryName ?? "Chuyên mục") - Khoa NVCB</PageTitle>
+<PageTitle>@(category?.CategoryName ?? "Chuyên mục") - Khoa NV3</PageTitle>
 
 <div class="container py-5">
     @if (isLoading)
@@ -32,10 +32,9 @@
                 {
                     <div class="col-md-6 col-lg-4">
                         <div class="category-card rounded-4 shadow-sm overflow-hidden position-relative" style="height: 220px;">
-                            <img src="@(string.IsNullOrEmpty(sub.ImageUrl) ? $"https://via.placeholder.com/600x400/2c3e50/ffffff?text={sub.CategoryName.Replace(" ", "+")}" : sub.ImageUrl)"
+                            <img src="@(string.IsNullOrEmpty(sub.ImageUrl) ? "images/Logo_hoc_vien_ANND.png" : sub.ImageUrl)"
                                  class="w-100 h-100" style="object-fit: cover;"
-                                 alt="@sub.CategoryName"
-                                 onerror="this.src='https://via.placeholder.com/600x400/2c3e50/ffffff?text=Loi+Anh'" />
+                                 alt="@sub.CategoryName" />
 
                             <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.5); transition: background 0.3s ease;"></div>
 

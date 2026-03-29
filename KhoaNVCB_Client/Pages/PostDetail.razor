@@ -6,7 +6,7 @@
 @inject PostService PostService
 @inject CategoryService CategoryService
 @inject AuthenticationStateProvider AuthStateProvider
-<PageTitle>@(post?.Title ?? "Đang tải...") - Khoa NVCB</PageTitle>
+<PageTitle>@(post?.Title ?? "Đang tải...") - Khoa NV3</PageTitle>
 
 <div class="container py-5">
     @if (isLoading)
@@ -25,6 +25,7 @@
     else
     {
         <div class="row">
+            @* CỘT TRÁI: BÀI VIẾT VÀ BÌNH LUẬN *@
             <div class="col-lg-8 col-xl-9 mb-5">
 
                 <div class="mb-2 text-uppercase fw-bold" style="color: #d35400; font-size: 0.85rem; letter-spacing: 0.5px;">
@@ -44,19 +45,37 @@
                         }
                         else
                         {
-                            <img src="@post.OriginalUrl" class="img-fluid rounded-3 shadow-sm w-100" alt="@post.Title" style="object-fit: cover;" onerror="this.style.display='none';" />
+                            <img src="@(string.IsNullOrEmpty(post.OriginalUrl) ? "images/Logo_hoc_vien_ANND.png" : post.OriginalUrl)" class="img-fluid rounded-3 shadow-sm w-100" alt="@post.Title" style="object-fit: cover;" />
                         }
                     </div>
                 }
 
                 <div class="d-flex align-items-center text-muted small mb-4 pb-3 border-bottom">
-                    <span class="me-4"><i class="oi oi-person me-1"></i> Tác giả: <strong>@(post.AuthorName ?? "Khoa NVCB")</strong></span>
+                    <span class="me-4"><i class="oi oi-person me-1"></i> Tác giả: <strong>@(post.AuthorName ?? "Khoa NV3")</strong></span>
                     <span><i class="oi oi-clock me-1"></i> Xuất bản: <strong>@post.CreatedDate?.ToString("dd/MM/yyyy")</strong></span>
                 </div>
 
                 <div class="post-content">
                     @((MarkupString)(post.Content ?? ""))
                 </div>
+
+                @* --- PHƯƠNG ÁN 1: DẢI CHUYÊN MỤC VUỐT NGANG (CHỈ HIỆN TRÊN MOBILE) --- *@
+                <div class="mobile-categories-chips d-lg-none mt-5 pt-4 border-top border-2">
+                    <h5 class="fw-bold mb-3 text-uppercase" style="color: #1a237e; font-size: 1.1rem;">Khám phá chuyên mục</h5>
+                    <div class="chips-container d-flex gap-2 pb-2">
+                        @if (categories != null)
+                        {
+                            @foreach (var cat in categories)
+                            {
+                                <a href="/category/@cat.CategoryId" class="chip-item text-decoration-none @(cat.CategoryName == post.CategoryName ? "active-chip" : "")">
+                                    @cat.CategoryName <span class="badge ms-1">@GetPostCount(cat.CategoryName)</span>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+                @* ------------------------------------------------------------------- *@
+
                 <div class="comments-section mt-5 pt-4 border-top border-2">
                     <h4 class="fw-bold mb-4" style="color: #1a237e;">
                         <i class="oi oi-chat me-2"></i> Bình luận (@comments.Count)
@@ -119,35 +138,31 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-xl-3">
-                <div class="sidebar-box p-4 rounded-3 shadow-sm bg-white border">
+            @* CỘT PHẢI: SIDEBAR (CHỈ HIỆN TRÊN MÁY TÍNH - d-none d-lg-block) *@
+            <div class="col-lg-4 col-xl-3 d-none d-lg-block">
+                <div class="sidebar-box p-4 rounded-3 shadow-sm bg-white border sticky-top" style="top: 80px;">
                     <h6 class="fw-bold text-uppercase mb-4" style="color: #1a237e;">CHUYÊN MỤC BÀI VIẾT</h6>
                     <ul class="list-unstyled mb-0">
                         @if (categories != null)
                         {
-                            @* 1. CHỈ LỌC CÁC CHUYÊN MỤC CHA (GỐC) ĐỂ HIỂN THỊ TRƯỚC *@
                             foreach (var parent in categories.Where(c => c.ParentId == null))
                             {
-                                // Lấy danh sách các chuyên mục con thuộc về ông cha này
                                 var children = categories.Where(c => c.ParentId == parent.CategoryId).ToList();
 
                                 <li class="mb-3 border-bottom pb-2">
-                                    @* GIAO DIỆN MỤC CHA *@
-                                    <a href="/category/@parent.CategoryId" class="text-decoration-none d-flex align-items-start category-link @(parent.CategoryId == id ? "active-cat" : "")">
+                                    <a href="/category/@parent.CategoryId" class="text-decoration-none d-flex align-items-start category-link @(parent.CategoryName == post.CategoryName ? "active-cat" : "")">
                                         <i class="oi oi-folder mt-1 me-2 text-danger" style="font-size: 0.8rem;"></i>
                                         <span class="flex-grow-1 fw-bold">@parent.CategoryName</span>
                                         <span class="text-muted ms-1">(@GetPostCount(parent.CategoryName))</span>
                                     </a>
 
-                                    @* GIAO DIỆN MỤC CON (NẾU CÓ) *@
                                     @if (children.Any())
                                     {
-                                        /* Thụt lề (ms-3) và có đường viền mờ bên trái (border-start) để tạo cảm giác cây thư mục */
                                         <ul class="list-unstyled mt-2 ms-3 ps-3 border-start border-2" style="border-color: #e9ecef !important;">
                                             @foreach (var child in children)
                                             {
                                                 <li class="mb-2">
-                                                    <a href="/category/@child.CategoryId" class="text-decoration-none d-flex align-items-start category-link @(child.CategoryId == id ? "active-cat" : "")">
+                                                    <a href="/category/@child.CategoryId" class="text-decoration-none d-flex align-items-start category-link @(child.CategoryName == post.CategoryName ? "active-cat" : "")">
                                                         <i class="oi oi-chevron-right mt-1 me-2 text-secondary" style="font-size: 0.6rem;"></i>
                                                         <span class="flex-grow-1">@child.CategoryName</span>
                                                         <span class="text-muted ms-1">(@GetPostCount(child.CategoryName))</span>
@@ -167,7 +182,7 @@
 </div>
 
 <style>
-    /* Tổng thể khung nội dung */
+    /* ... (Phần CSS cũ của bài viết giữ nguyên) ... */
     .post-content {
         font-size: 1.2rem;
         line-height: 1.9;
@@ -175,7 +190,6 @@
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
-        /* Định dạng các tiêu đề bên trong bài viết */
         .post-content h1, .post-content h2, .post-content h3 {
             color: #1a237e;
             margin-top: 1.5rem;
@@ -183,17 +197,15 @@
             font-weight: 700;
         }
 
-        /* Định dạng hình ảnh - Quan trọng để ảnh từ Word/TinyMCE hiện đẹp */
         .post-content img {
             max-width: 100%;
             height: auto !important;
             border-radius: 8px;
             display: block;
             margin: 1.5rem auto;
-            shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* Định dạng danh sách (Bullet points) */
         .post-content ul, .post-content ol {
             margin-bottom: 1.5rem;
             padding-left: 1.5rem;
@@ -203,7 +215,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Định dạng bảng biểu nếu có copy từ Word vào */
         .post-content table {
             width: 100% !important;
             border-collapse: collapse;
@@ -215,7 +226,6 @@
                 padding: 8px;
             }
 
-    /* Style cho Sidebar */
     .category-link {
         color: #555;
         transition: all 0.2s;
@@ -234,6 +244,59 @@
     .sidebar-box {
         border-top: 4px solid #1a237e !important;
     }
+
+    /* --- CSS CHO DẢI CHUYÊN MỤC VUỐT NGANG (MOBILE CHIPS) --- */
+    .mobile-categories-chips {
+        width: 100%;
+    }
+
+    .chips-container {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+    }
+
+        .chips-container::-webkit-scrollbar {
+            display: none; /* Ẩn thanh cuộn trên Chrome/Safari/Edge */
+        }
+
+    .chip-item {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background-color: #f8f9fa;
+        color: #495057;
+        border-radius: 50px; /* Bo tròn hoàn toàn tạo hình viên thuốc (Pill) */
+        font-size: 0.95rem;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+    }
+
+        .chip-item .badge {
+            background-color: #e9ecef;
+            color: #6c757d;
+            border-radius: 50%;
+            padding: 4px 6px;
+            font-size: 0.75rem;
+        }
+
+        .chip-item:hover {
+            background-color: #e2e6ea;
+            color: #1a237e;
+        }
+
+    .active-chip {
+        background-color: #dc3545; /* Màu đỏ nổi bật cho chuyên mục hiện tại */
+        color: white !important;
+        border-color: #dc3545;
+        font-weight: bold;
+    }
+
+        .active-chip .badge {
+            background-color: white !important;
+            color: #dc3545 !important;
+        }
 </style>
 
 @code {
@@ -249,27 +312,23 @@
     private string? commentError;
     private bool isSubmittingComment = false;
     private int? currentAccountId;
+
     protected override async Task OnParametersSetAsync()
     {
         isLoading = true;
 
         post = await PostService.GetByIdAsync(id);
 
-        // Load danh mục sidebar
         if (categories == null) categories = await CategoryService.GetAllAsync();
         if (allPosts == null) allPosts = await PostService.GetAllAsync();
 
-        // Load bình luận
         comments = await PostService.GetCommentsByPostAsync(id);
 
-        // Lấy AccountId của người đang đăng nhập (nếu có)
-        // Lấy thông tin người dùng từ Token
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
         if (user.Identity != null && user.Identity.IsAuthenticated)
         {
-            // Thử lấy ID bằng nhiều tên gọi khác nhau mà JWT thường dùng
             var idClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)
                           ?? user.FindFirst("sub")
                           ?? user.FindFirst("nameid");
@@ -287,6 +346,7 @@
 
         isLoading = false;
     }
+
     private async Task SubmitComment()
     {
         commentError = null;
@@ -316,8 +376,8 @@
 
         if (success)
         {
-            newCommentText = ""; // Xóa trắng ô nhập
-            comments = await PostService.GetCommentsByPostAsync(id); // Tải lại danh sách bình luận ngay lập tức
+            newCommentText = "";
+            comments = await PostService.GetCommentsByPostAsync(id);
         }
         else
         {
@@ -326,6 +386,7 @@
 
         isSubmittingComment = false;
     }
+
     private string GetEmbedUrl(string url)
     {
         if (string.IsNullOrEmpty(url)) return "";
@@ -341,7 +402,6 @@
         return url;
     }
 
-    // Đếm số bài viết cho Sidebar
     private int GetPostCount(string categoryName)
     {
         if (allPosts == null || string.IsNullOrEmpty(categoryName)) return 0;
