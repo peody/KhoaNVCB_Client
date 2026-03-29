@@ -38,5 +38,6 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<KhoaNVCB_Client.Services.PhotoUploadService>();
 builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<ScraperService>();
 
 await builder.Build().RunAsync();

@@ -90,6 +90,30 @@
                         }
                     </div>
                 </div>
+                @* --- BÀI VIẾT MỚI (CHỈ HIỆN TRÊN MOBILE - VUỐT NGANG) --- *@
+                <div class="mobile-recent-posts d-lg-none mt-4 pt-4 border-top border-2">
+                    <h5 class="fw-bold mb-3 text-uppercase" style="color: #1a237e; font-size: 1.1rem;">Bài viết mới cập nhật</h5>
+                    <div class="horizontal-scroll-container d-flex gap-3 pb-2">
+                        @if (recentPosts != null && recentPosts.Any())
+                        {
+                            @foreach (var p in recentPosts)
+                            {
+                                <div class="card shadow-sm border-0 rounded-3 flex-shrink-0" style="width: 240px;">
+                                    <img src="@(string.IsNullOrEmpty(p.ImageUrl) ? "images/Logo_hoc_vien_ANND.png" : p.ImageUrl)"
+                                         class="card-img-top" alt="@p.Title" style="height: 130px; object-fit: cover;" />
+                                    <div class="card-body p-2 d-flex flex-column">
+                                        <a href="/post/@p.PostId" class="text-decoration-none stretched-link">
+                                            <h6 class="fw-bold text-dark text-truncate-2 mb-1" style="font-size: 0.9rem;">@p.Title</h6>
+                                        </a>
+                                        <small class="text-muted mt-auto" style="font-size: 0.75rem;">
+                                            <i class="oi oi-clock me-1"></i> @p.CreatedDate?.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
                 @* ------------------------------------------------------------------- *@
 
                 <div class="comments-section mt-5 pt-4 border-top border-2">
@@ -191,6 +215,26 @@
                             }
                         }
                     </ul>
+                </div>
+                @* --- BÀI VIẾT MỚI (CHỈ HIỆN TRÊN DESKTOP - DANH SÁCH DỌC) --- *@
+                <div class="mt-5 pt-4 border-top border-2">
+                    <h6 class="fw-bold text-uppercase mb-4" style="color: #1a237e;">BÀI VIẾT MỚI</h6>
+                    @if (recentPosts != null && recentPosts.Any())
+                    {
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var p in recentPosts)
+                            {
+                                <a href="/post/@p.PostId" class="text-decoration-none d-flex align-items-center article-link-hover">
+                                    <img src="@(string.IsNullOrEmpty(p.ImageUrl) ? "images/Logo_hoc_vien_ANND.png" : p.ImageUrl)"
+                                         class="rounded-2 shadow-sm flex-shrink-0 me-2" alt="@p.Title" style="width: 75px; height: 55px; object-fit: cover;" />
+                                    <div>
+                                        <h6 class="fw-bold text-dark text-truncate-2 mb-1" style="font-size: 0.85rem; line-height: 1.3;">@p.Title</h6>
+                                        <small class="text-muted" style="font-size: 0.75rem;">@p.CreatedDate?.ToString("dd/MM/yyyy")</small>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -328,7 +372,7 @@
     private string? commentError;
     private bool isSubmittingComment = false;
     private int? currentAccountId;
-
+    private List<PostDto> recentPosts = new();
     protected override async Task OnParametersSetAsync()
     {
         isLoading = true;
@@ -336,7 +380,16 @@
         post = await PostService.GetByIdAsync(id);
 
         if (categories == null) categories = await CategoryService.GetAllAsync();
-        if (allPosts == null) allPosts = await PostService.GetAllAsync();
+        allPosts = await PostService.GetAllAsync();
+        if (allPosts != null)
+        {
+            // Lọc ra 5 bài mới nhất (đã duyệt) và KHÔNG TRÙNG với bài đang xem
+            recentPosts = allPosts
+                .Where(p => p.Status == "Published" && p.PostId != id)
+                .OrderByDescending(p => p.CreatedDate)
+                .Take(5)
+                .ToList();
+        }
 
         comments = await PostService.GetCommentsByPostAsync(id);
 
