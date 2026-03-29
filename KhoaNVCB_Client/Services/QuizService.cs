@@ -37,6 +37,29 @@ namespace KhoaNVCB_Client.Services
             var response = await _http.DeleteAsync($"api/Quizzes/question/{id}");
             return response.IsSuccessStatusCode;
         }
+        // Lấy đề thi ngẫu nhiên
+        public async Task<List<QuestionDto>> GetRandomQuestionsAsync(int categoryId)
+        {
+            return await _http.GetFromJsonAsync<List<QuestionDto>>($"api/Quizzes/random/{categoryId}") ?? new();
+        }
+
+        // Nộp bài và nhận điểm
+        // Nộp bài và nhận điểm
+        public async Task<QuizResultDto?> SubmitQuizAsync(SubmitQuizRequest request)
+        {
+            var response = await _http.PostAsJsonAsync("api/Quizzes/submit", request);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<QuizResultDto>();
+            }
+            return null;
+        }
+
+        // Lấy lịch sử cho Admin
+        public async Task<List<dynamic>> GetHistoryAsync()
+        {
+            return await _http.GetFromJsonAsync<List<dynamic>>("api/Quizzes/history") ?? new();
+        }
         // Import Excel (Đẩy file lên API)
         public async Task<string> ImportExcelAsync(int categoryId, MultipartFormDataContent content)
         {

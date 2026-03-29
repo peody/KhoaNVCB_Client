@@ -58,7 +58,23 @@
                 <div class="post-content">
                     @((MarkupString)(post.Content ?? ""))
                 </div>
-
+                @* NÚT RỦ RÊ THI TRẮC NGHIỆM SAU KHI ĐỌC XONG BÀI *@
+                <div class="mt-5 p-4 bg-light rounded-4 border text-center shadow-sm">
+                    <h5 class="fw-bold mb-3" style="color: #1a237e;">Bạn đã nắm vững kiến thức phần này chưa?</h5>
+                    <AuthorizeView>
+                        <Authorized>
+                            <a href="/quiz" class="btn btn-danger btn-lg fw-bold px-5 rounded-pill shadow">
+                                <i class="oi oi-media-play me-2"></i> BẮT ĐẦU KIỂM TRA NGAY
+                            </a>
+                        </Authorized>
+                        <NotAuthorized>
+                            <p class="text-muted small mb-3">Vui lòng đăng nhập để tham gia làm bài đánh giá năng lực.</p>
+                            <a href="/login?returnUrl=/post/@id" class="btn btn-outline-danger fw-bold px-4 rounded-pill">
+                                <i class="oi oi-account-login me-2"></i> Đăng nhập để thi
+                            </a>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
                 @* --- PHƯƠNG ÁN 1: DẢI CHUYÊN MỤC VUỐT NGANG (CHỈ HIỆN TRÊN MOBILE) --- *@
                 <div class="mobile-categories-chips d-lg-none mt-5 pt-4 border-top border-2">
                     <h5 class="fw-bold mb-3 text-uppercase" style="color: #1a237e; font-size: 1.1rem;">Khám phá chuyên mục</h5>
