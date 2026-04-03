@@ -7,7 +7,7 @@
     <title>Khoa An ninh nội địa</title>
     <base href="/" />
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="/icon-192.png" href="favicon.png" />
 </head>
 
 <body>
@@ -120,6 +120,16 @@
             URL.revokeObjectURL(url);
         }
     </script>
+    <script>
+        window.copyToClipboard = async (text) => {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (error) {
+                console.error("Lỗi copy: ", error);
+                return false;
+            }
+        }
+    </script>
 </body>
-
 </html>
