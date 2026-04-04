@@ -120,6 +120,16 @@
             URL.revokeObjectURL(url);
         }
     </script>
+    <script>
+        window.copyToClipboard = async (text) => {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (error) {
+                console.error("Lỗi copy: ", error);
+                return false;
+            }
+        }
+    </script>
 </body>
-
 </html>
