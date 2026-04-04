@@ -1,0 +1,264 @@
+﻿@page "/gioi-thieu"
+
+<PageTitle>Giới thiệu - Khoa NV3</PageTitle>
+
+<div class="about-page">
+    @* ==========================================
+       PHẦN 1: HERO BANNER (ĐÓN KHÁCH)
+       ========================================== *@
+    <section class="hero-section text-center position-relative overflow-hidden pt-5 pb-5 bg-light">
+        <div class="container position-relative z-index-1 mt-4">
+            <span class="badge badge-custom mb-3 px-3 py-2 rounded-pill shadow-sm">
+                <i class="oi oi-star me-1"></i> BỀN VỮNG & PHÁT TRIỂN
+            </span>
+            <h1 class="display-4 fw-bold text-nv3-primary mb-3">Khoa An ninh Nội địa (NV3)</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 700px;">
+                Trải qua quá trình xây dựng và phát triển, Khoa An ninh nội địa luôn chú trọng nâng cao chất lượng đào tạo, kết hợp chặt chẽ giữa lý luận và thực tiễn, đáp ứng yêu cầu nhiệm vụ trong tình hình mới.
+            </p>
+        </div>
+        @* Bạn có thể chèn 1 cái ảnh tập thể khoa mờ mờ làm background ở đây nếu muốn *@
+    </section>
+
+    @* ==========================================
+       PHẦN 2: LỊCH SỬ & CHỨC NĂNG NHIỆM VỤ
+       ========================================== *@
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-6 mb-4 mb-lg-0 pe-lg-5">
+                    <h6 class="text-nv3-orange fw-bold text-uppercase mb-2">Lịch sử hình thành</h6>
+                    <h2 class="fw-bold text-nv3-primary mb-4">Hành trình [ĐIỀN SỐ] năm cống hiến</h2>
+                    <p class="text-secondary" style="line-height: 1.8;">
+                        [ĐIỀN ĐOẠN 1: Khoa NV3 được thành lập vào ngày tháng năm nào? Tiền thân là gì?]
+                    </p>
+                    <p class="text-secondary" style="line-height: 1.8;">
+                        [ĐIỀN ĐOẠN 2: Những cột mốc quan trọng nhất hoặc những thành tích nổi bật mà Khoa đã đạt được trong quá trình phát triển...]
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="rounded-4 overflow-hidden shadow-lg position-relative" style="height: 400px; background-color: #f8f9fa;">
+                        @* CỤC CỨT THAY LINK ẢNH TẬP THỂ KHOA HOẶC TRỤ SỞ VÀO ĐÂY *@
+                        <img src="[ĐIỀN LINK ẢNH ĐẠI DIỆN CỦA KHOA VÀO ĐÂY]" alt="Ảnh tập thể Khoa NV3" class="w-100 h-100" style="object-fit: cover;" />
+                        <div class="position-absolute top-50 start-50 translate-middle text-muted w-100 text-center" style="z-index: 0;">
+                            <i>[Khu vực hiển thị ảnh tập thể Khoa]</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-2">
+                @* Card Sứ mệnh *@
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 hover-lift">
+                        <div class="card-body">
+                            <div class="icon-box mb-3 d-flex align-items-center justify-content-center rounded-circle bg-nv3-primary-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-nv3-primary" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" /><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3.5A.5.5 0 0 1 7 8V4.5A.5.5 0 0 1 8 4z" /></svg>
+                            </div>
+                            <h4 class="fw-bold text-nv3-primary">Sứ mệnh</h4>
+                            <p class="text-secondary mt-3">
+                                [ĐIỀN SỨ MỆNH: Ví dụ - Đào tạo đội ngũ sĩ quan An ninh có bản lĩnh chính trị vững vàng, tinh thông nghiệp vụ, am hiểu pháp luật, sẵn sàng chiến đấu bảo vệ Tổ quốc...]
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                @* Card Tầm nhìn *@
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 p-4 hover-lift">
+                        <div class="card-body">
+                            <div class="icon-box mb-3 d-flex align-items-center justify-content-center rounded-circle bg-nv3-orange-light">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-nv3-orange" viewBox="0 0 16 16"><path d="M8 16a3 3 0 0 0 3-3H5a3 3 0 0 0 3 3zM1 11.5A2.5 2.5 0 0 0 3.5 14h9a2.5 2.5 0 0 0 2.5-2.5V10a2.5 2.5 0 0 0-2.5-2.5h-9A2.5 2.5 0 0 0 1 10v1.5zm11.5-4a1.5 1.5 0 0 1 1.5 1.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 10V8.5A1.5 1.5 0 0 1 3.5 7h9z" /></svg>
+                            </div>
+                            <h4 class="fw-bold text-nv3-primary">Tầm nhìn</h4>
+                            <p class="text-secondary mt-3">
+                                [ĐIỀN TẦM NHÌN: Phấn đấu trở thành đơn vị mũi nhọn trong nghiên cứu khoa học, chuyển đổi số giáo dục đào tạo, đóng góp tích cực vào lý luận An ninh quốc gia...]
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @* ==========================================
+       PHẦN 3: NHỮNG CON SỐ BIẾT NÓI (Style giống ảnh 3)
+       ========================================== *@
+    <section class="py-5" style="background-color: #f8f9fc;">
+        <div class="container">
+            <div class="row align-items-center bg-white rounded-4 shadow-sm overflow-hidden">
+                <div class="col-lg-6 p-5">
+                    <h2 class="fw-bold text-nv3-primary mb-4">Về Khoa An ninh nội địa</h2>
+                    <blockquote class="blockquote border-start border-4 border-nv3-orange ps-4 mb-4">
+                        <p class="fst-italic text-muted" style="line-height: 1.8;">
+                            "Khoa đề cao tinh thần trách nhiệm, kỷ luật, tính chủ động và sự nỗ lực của học viên nhằm bảo đảm hiệu quả học tập, nghiên cứu và rèn luyện theo mục tiêu đào tạo của Học viện."
+                        </p>
+                    </blockquote>
+                    <button class="btn btn-nv3-primary px-4 py-2 fw-bold rounded-3 mt-2">NGHIÊN CỨU NGAY <i class="oi oi-arrow-right ms-2" style="font-size: 0.8rem;"></i></button>
+                </div>
+                <div class="col-lg-6 p-0 position-relative" style="background-color: #eaf0fb; min-height: 400px;">
+                    @* Khối màu cam thống kê *@
+                    <div class="d-flex flex-column justify-content-center h-100 p-5 position-relative z-index-1">
+                        <div class="stat-box d-flex align-items-center text-white rounded-3 shadow-sm mb-3 w-75 p-3 hover-scale">
+                            <h2 class="fw-bold mb-0 me-3">43</h2>
+                            <span class="fs-6">Năm kinh nghiệm</span>
+                        </div>
+                        <div class="stat-box d-flex align-items-center text-white rounded-3 shadow-sm mb-3 w-75 p-3 ms-4 hover-scale">
+                            <h2 class="fw-bold mb-0 me-3">10+</h2>
+                            <span class="fs-6">Hệ Dữ liệu</span>
+                        </div>
+                        <div class="stat-box d-flex align-items-center text-white rounded-3 shadow-sm w-75 p-3 hover-scale">
+                            <h2 class="fw-bold mb-0 me-3">30</h2>
+                            <span class="fs-6">Giảng viên, cán bộ giảng dạy</span>
+                        </div>
+                    </div>
+                    @* Chỗ này là cái nền xanh nhạt mờ mờ phía sau *@
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @* ==========================================
+       PHẦN 4: ĐỘI NGŨ LÃNH ĐẠO / GIẢNG VIÊN
+       ========================================== *@
+    <section class="py-5 bg-white">
+        <div class="container text-center">
+            <h6 class="text-nv3-orange fw-bold text-uppercase mb-2">Đội ngũ của chúng tôi</h6>
+            <h2 class="fw-bold text-nv3-primary mb-5">Ban Lãnh Đạo Khoa NV3</h2>
+
+            <div class="row justify-content-center g-4">
+                @* Cán bộ 1 (Trưởng Khoa) *@
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden team-card text-center">
+                        <div class="bg-light d-flex justify-content-center align-items-end pt-4" style="height: 250px;">
+                            @* Điền ảnh thầy Trưởng khoa *@
+                            <img src="/Images/placeholder-avatar.jpg" alt="Trưởng khoa" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.src='https://ui-avatars.com/api/?name=Trưởng+Khoa&background=3b2f5b&color=fff&size=200';" />
+                        </div>
+                        <div class="card-body p-4 position-relative bg-white z-index-1">
+                            <h5 class="fw-bold text-nv3-primary mb-1">[ĐIỀN TÊN TRƯỞNG KHOA]</h5>
+                            <p class="text-nv3-orange small fw-bold mb-3">TRƯỞNG KHOA</p>
+                            <p class="text-muted small mb-0">
+                                [Giới thiệu ngắn gọn vài dòng về chuyên môn hoặc thành tích của Thầy/Cô...]
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                @* Cán bộ 2 (Phó Khoa) *@
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden team-card text-center">
+                        <div class="bg-light d-flex justify-content-center align-items-end pt-4" style="height: 250px;">
+                            <img src="/Images/placeholder-avatar.jpg" alt="Phó khoa" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.src='https://ui-avatars.com/api/?name=Phó+Khoa&background=d97736&color=fff&size=200';" />
+                        </div>
+                        <div class="card-body p-4 position-relative bg-white z-index-1">
+                            <h5 class="fw-bold text-nv3-primary mb-1">[ĐIỀN TÊN PHÓ KHOA 1]</h5>
+                            <p class="text-nv3-orange small fw-bold mb-3">PHÓ TRƯỞNG KHOA</p>
+                            <p class="text-muted small mb-0">
+                                [Giới thiệu ngắn gọn vài dòng về chuyên môn hoặc thành tích của Thầy/Cô...]
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                @* Cán bộ 3 (Phó Khoa) *@
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden team-card text-center">
+                        <div class="bg-light d-flex justify-content-center align-items-end pt-4" style="height: 250px;">
+                            <img src="/Images/placeholder-avatar.jpg" alt="Phó khoa" class="img-fluid" style="max-height: 100%; object-fit: contain;" onerror="this.src='https://ui-avatars.com/api/?name=Phó+Khoa&background=d97736&color=fff&size=200';" />
+                        </div>
+                        <div class="card-body p-4 position-relative bg-white z-index-1">
+                            <h5 class="fw-bold text-nv3-primary mb-1">[ĐIỀN TÊN PHÓ KHOA 2]</h5>
+                            <p class="text-nv3-orange small fw-bold mb-3">PHÓ TRƯỞNG KHOA</p>
+                            <p class="text-muted small mb-0">
+                                [Giới thiệu ngắn gọn vài dòng về chuyên môn hoặc thành tích của Thầy/Cô...]
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    /* BẢNG MÀU CHUẨN THEO ẢNH CỦA BẠN */
+    :root {
+        --nv3-primary: #3b2f5b; /* Màu tím than logo và text */
+        --nv3-primary-light: #f0ecfb;
+        --nv3-orange: #d97736; /* Màu cam ở các cục thống kê */
+        --nv3-orange-light: #fdf2ec;
+    }
+
+    .text-nv3-primary {
+        color: var(--nv3-primary) !important;
+    }
+
+    .text-nv3-orange {
+        color: var(--nv3-orange) !important;
+    }
+
+    .bg-nv3-primary-light {
+        background-color: var(--nv3-primary-light) !important;
+    }
+
+    .bg-nv3-orange-light {
+        background-color: var(--nv3-orange-light) !important;
+    }
+
+    .btn-nv3-primary {
+        background-color: var(--nv3-primary);
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-nv3-primary:hover {
+            background-color: #2a2143;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 47, 91, 0.3);
+        }
+
+    .badge-custom {
+        background-color: #fceceb;
+        color: #d94136;
+        border: 1px solid #fad2cf;
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.1) !important;
+        }
+
+    /* Khối thống kê màu cam */
+    .stat-box {
+        background-color: var(--nv3-orange);
+        opacity: 0.95;
+        border-left: 5px solid #bd6228;
+        transition: transform 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.03) translateX(10px);
+    }
+
+    /* Hiệu ứng mượt cho thẻ Team */
+    .team-card {
+        transition: transform 0.3s ease;
+        border-bottom: 4px solid transparent !important;
+    }
+
+        .team-card:hover {
+            transform: translateY(-8px);
+            border-bottom: 4px solid var(--nv3-orange) !important;
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
+        }
+</style>
